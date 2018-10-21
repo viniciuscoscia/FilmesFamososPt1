@@ -11,40 +11,43 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MoviesJsonUtils {
+
+    private static final String LOG_TAG = MoviesJsonUtils.class.getName();
+
     public static ArrayList<Movie> jsonToMovieList(String jsonString) throws JSONException {
         ArrayList<Movie> listaFilmes = new ArrayList<Movie>();
 
-        JSONArray moviesJson = new JSONObject(jsonString).getJSONArray("results");
+        JSONArray moviesJson = new JSONObject(jsonString).optJSONArray("results");
 
-        Log.v("RESULTADO", moviesJson.toString());
+        Log.v(LOG_TAG, moviesJson.toString());
 
         for(int i = 0; i < moviesJson.length(); i++){
             Movie movie = new Movie();
 
-            JSONObject movieJson =  moviesJson.getJSONObject(i);
+            JSONObject movieJson =  moviesJson.optJSONObject(i);
 
-            movie.setVoteCount(movieJson.getInt("vote_count"));
-            movie.setId(movieJson.getLong("id"));
-            movie.setVideo(movieJson.getBoolean("video"));
-            movie.setVoteAverage(movieJson.getDouble("vote_average"));
-            movie.setTitle(movieJson.getString("title"));
-            movie.setPopularity(movieJson.getDouble("popularity"));
-            movie.setPosterPath(movieJson.getString("poster_path"));
-            movie.setOriginalLanguage(movieJson.getString("original_language"));
-            movie.setOriginalTitle(movieJson.getString("original_title"));
+            movie.setVoteCount(movieJson.optInt("vote_count"));
+            movie.setId(movieJson.optLong("id"));
+            movie.setVideo(movieJson.optBoolean("video"));
+            movie.setVoteAverage(movieJson.optDouble("vote_average"));
+            movie.setTitle(movieJson.optString("title"));
+            movie.setPopularity(movieJson.optDouble("popularity"));
+            movie.setPosterPath(movieJson.optString("poster_path"));
+            movie.setOriginalLanguage(movieJson.optString("original_language"));
+            movie.setOriginalTitle(movieJson.optString("original_title"));
 
-            JSONArray genreIds = movieJson.getJSONArray("genre_ids");
+            JSONArray genreIds = movieJson.optJSONArray("genre_ids");
             ArrayList<Integer> genreIdsList = new ArrayList<Integer>();
 
             for(int j = 0; j < genreIds.length(); j++){
-                genreIdsList.add(genreIds.getInt(j));
+                genreIdsList.add(genreIds.optInt(j));
             }
 
             movie.setGenreIds(genreIdsList);
-            movie.setBackdropPath(movieJson.getString("backdrop_path"));
-            movie.setAdult(movieJson.getBoolean("adult"));
-            movie.setOverview(movieJson.getString("overview"));
-            movie.setReleaseDate(movieJson.getString("release_date"));
+            movie.setBackdropPath(movieJson.optString("backdrop_path"));
+            movie.setAdult(movieJson.optBoolean("adult"));
+            movie.setOverview(movieJson.optString("overview"));
+            movie.setReleaseDate(movieJson.optString("release_date"));
 
             listaFilmes.add(movie);
         }

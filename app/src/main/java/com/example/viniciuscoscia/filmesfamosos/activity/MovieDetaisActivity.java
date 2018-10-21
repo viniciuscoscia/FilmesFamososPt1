@@ -29,7 +29,7 @@ public class MovieDetaisActivity extends AppCompatActivity {
         TextView tvResumo = findViewById(R.id.tvResumo);
 
         Intent intent = getIntent();
-        Movie movie = (Movie)intent.getSerializableExtra(MOVIE);
+        Movie movie = (Movie)intent.getParcelableExtra(Movie.PARCELABLE_KEY);
 
         tvTitulo.setText(movie.getTitle());
         tvTitulo.setPaintFlags(tvTitulo.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);

@@ -19,13 +19,16 @@ import android.widget.Toast;
 import com.example.viniciuscoscia.filmesfamosos.R;
 import com.example.viniciuscoscia.filmesfamosos.adapter.MovieAdapter;
 import com.example.viniciuscoscia.filmesfamosos.entity.Movie;
+import com.example.viniciuscoscia.filmesfamosos.utils.AsyncTaskDelegate;
+import com.example.viniciuscoscia.filmesfamosos.utils.MovieService;
 import com.example.viniciuscoscia.filmesfamosos.utils.MoviesJsonUtils;
 import com.example.viniciuscoscia.filmesfamosos.utils.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.FilmeOnClickHandler {
+public class MainActivity extends AppCompatActivity
+        implements MovieAdapter.FilmeOnClickHandler, AsyncTaskDelegate {
 
     private final String POPULAR = "popular";
     private final String TOP_RATED = "top_rated";
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Film
         }
 
         alterarTextoTipoOrdem(tipoPesquisa);
-        new MoviesAsyncTask().execute(tipoPesquisa);
+        new MovieService(this, this).execute(tipoPesquisa);
     }
 
     private void configurarRecyclerView() {
@@ -118,42 +121,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Film
     @Override
     public void onClick(Movie selectedMovie) {
         Intent intent = new Intent(this, MovieDetaisActivity.class);
-        intent.putExtra(MOVIE, selectedMovie);
+        intent.putExtra(Movie.PARCELABLE_KEY, selectedMovie);
         startActivity(intent);
     }
 
-    public class MoviesAsyncTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+    @Override
+    public void processFinish(Object output) {
+        if(output != null) {
+            ArrayList<Movie> movies = (ArrayList<Movie>) output;
 
-        @Override
-        protected ArrayList<Movie> doInBackground(String... strings) {
-
-            if(strings.length == 0){
-                return null;
-            }
-
-            findViewById(R.id.tv_tipo_ordem);
-
-            URL urlResponse = NetworkUtils.buildUrl(strings[0]);
-
-            try{
-                String resposta = NetworkUtils.getResponseFromURL(urlResponse);
-                ArrayList<Movie> listaFilmes = MoviesJsonUtils.jsonToMovieList(resposta);
-
-                return listaFilmes;
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            if (movies != null)
-                movieAdapter.setMovieList(movies);
+            movieAdapter.setMovieList(movies);
         }
     }
-
 
 
 }

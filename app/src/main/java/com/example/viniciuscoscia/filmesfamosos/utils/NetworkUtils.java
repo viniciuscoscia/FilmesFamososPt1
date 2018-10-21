@@ -17,12 +17,11 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static final String URL_LINK = "api.themoviedb.org";
-    private static final String API_KEY = BuildConfig.API_KEY; //TODO Put here your API key
+    private static final String API_KEY = BuildConfig.API_KEY;
     private static final String API_PARAM = "api_key";
 
     public static URL buildUrl(String queryOption){
         Uri.Builder uri = new Uri.Builder();
-//        http://api.themoviedb.org/3/movie/popular?api_key=[KEY]
         uri.scheme("http")
                 .authority(URL_LINK)
                 .appendPath("3")
@@ -38,8 +37,6 @@ public class NetworkUtils {
         } catch (Exception e){
             e.printStackTrace();
         }
-
-        Log.d("TESTE!", "" + url);
 
         return url;
     }

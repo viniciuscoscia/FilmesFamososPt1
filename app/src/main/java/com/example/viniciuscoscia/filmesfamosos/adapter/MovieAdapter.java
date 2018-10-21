@@ -1,12 +1,10 @@
 package com.example.viniciuscoscia.filmesfamosos.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.viniciuscoscia.filmesfamosos.R;
 import com.example.viniciuscoscia.filmesfamosos.entity.Movie;
@@ -40,7 +38,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movieList.get(position);
         Picasso.with(holder.imgPoster.getContext()).load("http://image.tmdb.org/t/p/w500//" + movie.getPosterPath()).into(holder.imgPoster);
-        holder.tvNomeFilme.setText(movie.getTitle());
     }
 
     @Override
@@ -57,12 +54,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView tvNomeFilme;
         ImageView imgPoster;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            tvNomeFilme = itemView.findViewById(R.id.tvNomeFilme);
             imgPoster = itemView.findViewById(R.id.imgPoster);
             itemView.setOnClickListener(this);
         }
