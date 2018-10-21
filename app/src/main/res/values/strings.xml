@@ -3,4 +3,9 @@
     <string name="ordenar">Ordenar por</string>
     <string name="melhores_notas">Melhores Notas</string>
     <string name="pupularidade">Popularidade</string>
+    <string name="sem_conexao_internet">Sem conexão com a internet :(</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="filmes_populares">Filmes populares</string>
+    <string name="filmes_melhores_notas">Filmes com melhores notas</string>
+    <string name="nota_media">Nota média: </string>
 </resources>

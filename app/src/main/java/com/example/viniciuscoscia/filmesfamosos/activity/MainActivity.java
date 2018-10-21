@@ -1,7 +1,10 @@
 package com.example.viniciuscoscia.filmesfamosos.activity;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.viniciuscoscia.filmesfamosos.R;
 import com.example.viniciuscoscia.filmesfamosos.adapter.MovieAdapter;
@@ -22,21 +27,41 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.FilmeOnClickHandler {
 
+    private final String POPULAR = "popular";
+    private final String TOP_RATED = "top_rated";
+    private final String MOVIE = "movie";
+
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
+    private TextView tv_tipo_ordem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tv_tipo_ordem = findViewById(R.id.tv_tipo_ordem);
 
         configurarRecyclerView();
 
-        String tipoPesquisa = "popular";
-        executar(tipoPesquisa);
+        executar(POPULAR);
     }
 
-    private void executar(String tipoPesquisa) {
+    private void executar(final String tipoPesquisa) {
+        if(!NetworkUtils.hasInternetConnection(this)){
+            View view = this.findViewById(R.id.main_activity);
+
+            Snackbar snackbar = Snackbar.make(view, getString(R.string.sem_conexao_internet), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getString(R.string.retry), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    executar(tipoPesquisa);
+                }
+            });
+            snackbar.show();
+
+            return;
+        }
+
         alterarTextoTipoOrdem(tipoPesquisa);
         new MoviesAsyncTask().execute(tipoPesquisa);
     }
@@ -53,13 +78,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Film
 
     private void alterarTextoTipoOrdem(String ordem){
         String text = "";
-        if(ordem.equals("popular")){
-            text = "Filmes populares";
-        } else if (ordem.equals("top_rated")){
-            text = "Filmes com melhores notas";
+        if(ordem.equals(POPULAR)){
+            text = getString(R.string.filmes_populares);
+        } else if (ordem.equals(TOP_RATED)){
+            text = getString(R.string.filmes_melhores_notas);
         }
 
-        ((TextView) findViewById(R.id.tv_tipo_ordem)).setText(text);
+        tv_tipo_ordem.setText(text);
     }
 
     @Override
@@ -75,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Film
         String tipoOrdem = "";
 
         if (id == R.id.menu_melhores_notas) {
-            tipoOrdem = "top_rated";
+            tipoOrdem = TOP_RATED;
         } else if(id == R.id.menu_popularidade){
-            tipoOrdem = "popular";
+            tipoOrdem = POPULAR;
         }
 
         if(!tipoOrdem.equals("")){
@@ -93,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Film
     @Override
     public void onClick(Movie selectedMovie) {
         Intent intent = new Intent(this, MovieDetaisActivity.class);
-        intent.putExtra("movie", selectedMovie);
+        intent.putExtra(MOVIE, selectedMovie);
         startActivity(intent);
     }
 

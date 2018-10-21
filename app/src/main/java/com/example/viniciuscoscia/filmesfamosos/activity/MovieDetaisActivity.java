@@ -9,43 +9,37 @@ import android.widget.TextView;
 
 import com.example.viniciuscoscia.filmesfamosos.R;
 import com.example.viniciuscoscia.filmesfamosos.entity.Movie;
+import com.example.viniciuscoscia.filmesfamosos.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 public class MovieDetaisActivity extends AppCompatActivity {
 
-    private TextView tvTitulo;
-    private ImageView tvImagemResumo;
-    private TextView tvNota;
-    private TextView tvDataLancamento;
-    private TextView tvResumo;
+    private final String MOVIE = "movie";
+    private final String IMAGE_PATH = "http://image.tmdb.org/t/p/w500//";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detais);
 
-        tvTitulo = findViewById(R.id.tvTitulo);
-        tvImagemResumo = findViewById(R.id.tvImagemResumo);
-        tvNota = findViewById(R.id.tvNota);
-        tvDataLancamento = findViewById(R.id.tvDataLancamento);
-        tvResumo = findViewById(R.id.tvResumo);
+        TextView tvTitulo = findViewById(R.id.tvTitulo);
+        ImageView tvImagemResumo = findViewById(R.id.tvImagemResumo);
+        TextView tvNota = findViewById(R.id.tvNota);
+        TextView tvDataLancamento = findViewById(R.id.tvDataLancamento);
+        TextView tvResumo = findViewById(R.id.tvResumo);
 
         Intent intent = getIntent();
-        Movie movie = (Movie)intent.getSerializableExtra("movie");
+        Movie movie = (Movie)intent.getSerializableExtra(MOVIE);
 
         tvTitulo.setText(movie.getTitle());
         tvTitulo.setPaintFlags(tvTitulo.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        Picasso.with(this).load("http://image.tmdb.org/t/p/w500//" + movie.getPosterPath()).into(tvImagemResumo);
-        tvNota.setText("Nota média: " + movie.getVoteAverage());
+        Picasso.with(this).load(IMAGE_PATH + movie.getPosterPath()).into(tvImagemResumo);
+        tvNota.setText(getString(R.string.nota_media)+ movie.getVoteAverage());
 
-        String data = movie.getReleaseDate();
-
-        tvDataLancamento.setText(formatarData(movie.getReleaseDate()));
+        tvDataLancamento.setText(Utils.formatarData(movie.getReleaseDate()));
         tvResumo.setText(movie.getOverview());
     }
 
-    private String formatarData(String data){
-        return data.split("-")[2] + "/" + data.split("-")[1]  + "/" + data.split("-")[0];
-    }
+
 }

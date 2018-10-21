@@ -1,7 +1,12 @@
 package com.example.viniciuscoscia.filmesfamosos.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.viniciuscoscia.filmesfamosos.BuildConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +17,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static final String URL_LINK = "api.themoviedb.org";
-    private static final String API_KEY = ""; //TODO Put here your API key
+    private static final String API_KEY = BuildConfig.API_KEY; //TODO Put here your API key
     private static final String API_PARAM = "api_key";
 
     public static URL buildUrl(String queryOption){
@@ -59,5 +64,18 @@ public class NetworkUtils {
             urlConnection.disconnect();
         }
 
+    }
+
+    public static boolean hasInternetConnection(Context context) {
+        ConnectivityManager conMgr = (ConnectivityManager) context
+                .getSystemService(context.CONNECTIVITY_SERVICE);
+        NetworkInfo i = conMgr.getActiveNetworkInfo();
+        if (i == null)
+            return false;
+        if (!i.isConnected())
+            return false;
+        if (!i.isAvailable())
+            return false;
+        return true;
     }
 }
